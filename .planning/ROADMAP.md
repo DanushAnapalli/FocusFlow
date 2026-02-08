@@ -46,11 +46,12 @@ Plans:
   2. User who looks away briefly (1-2 seconds) sees no score change, while sustained look-away (8-10+ seconds) causes a gradual score decline with visual color/animation changes
   3. User sees a sparkline chart showing focus score trend over the session and stat cards summarizing current metrics
   4. User (or demo operator) can adjust scoring sensitivity through a tunable control to calibrate for different environments
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md -- Install dependencies, UI primitives (cn, Button), Hero landing page with routing
+- [ ] 02-02-PLAN.md -- Focus scoring algorithm (pure functions) and useFocusScore hook
+- [ ] 02-03-PLAN.md -- Score visualization (ring, sparkline, stat cards, sensitivity slider) wired to live data
 
 ### Phase 3: AI Coaching Nudges
 **Goal**: Users receive timely, contextual voice coaching when distracted, with natural audio that feels helpful rather than annoying
@@ -105,7 +106,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Webcam Detection Pipeline | 0/3 | Planned | - |
-| 2. Focus Scoring & Visualization | 0/TBD | Not started | - |
+| 2. Focus Scoring & Visualization | 0/3 | Planned | - |
 | 3. AI Coaching Nudges | 0/TBD | Not started | - |
 | 4. Session Management | 0/TBD | Not started | - |
 | 5. Blockchain Rewards (Stretch) | 0/TBD | Not started | - |
