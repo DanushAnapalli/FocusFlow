@@ -1,86 +1,140 @@
-# Project State
+# Project State: FocusFlow
 
-## Project Reference
+**Last Updated:** 2026-02-08
+**Current Phase:** Phase 4 - Session Management (Plan 1 of 3 complete)
+**Status:** Session foundation built, UI integration next
 
-See: .planning/PROJECT.md (updated 2026-02-07)
+## Current Milestone
 
-**Core value:** Users must receive accurate, real-time awareness of when they're losing focus through webcam-based detection
-**Current focus:** Phase 3 - AI Coaching Nudges (IN PROGRESS)
+**Milestone:** Core Demo Loop (Phases 1-3) + Session Management (Phase 4)
+**Status:** Phase 4 in progress (1/3 plans complete)
+**Progress:** 3/6 phases complete, phase 4 started
+**Progress bar:** ██████████░░░░░░░░░░ (50% phases, 1/3 P4 plans)
 
-## Current Position
+## Recent Changes (Last 7 Days)
 
-Phase: 3 of 5 (AI Coaching Nudges)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-08 -- Completed 03-01-PLAN.md
+### 2026-02-08
+- ✅ **Phase 3 Complete:** AI Coaching Nudges fully implemented
+  - Coaching engine with state machine (timing, escalation, recovery)
+  - Gemini 2.5 Flash integration for contextual coaching text
+  - ElevenLabs Flash v2.5 TTS with server-side caching
+  - NudgeIndicator component with tier-colored styling
+  - Pre-cache warm-up system (27 phrases)
+  - SpeechSynthesis fallback for offline/quota scenarios
+  - Complete pipeline: score drop → chime → coaching → visual feedback
 
-Progress: [██████░░░░] 60%
+- 🔧 **Focus Scoring Refinement:**
+  - Changed to 3-second timer system (±1 point every 3 seconds)
+  - Score only decreases (no increase), starting at 100
+  - Improved detection thresholds (head: ±45°/35°, gaze: ±60°)
+  - Reduced gaze weight to 20%, increased head pose to 70%
+  - Chime trigger lowered to 2 points lost (from 5)
+  - Chime interval reduced to 1.5 seconds (from 3 seconds)
 
-## Performance Metrics
+### 2026-02-07
+- ✅ **Phase 2 Complete:** Focus Scoring & Visualization
+  - Real-time 0-100 focus score with color-coded feedback
+  - Animated circular ring, sparkline chart, stat cards
+  - Sensitivity slider for EMA tuning
+  - Two-column layout (webcam + analytics)
+  - Audio chime system for focus drops
 
-**Velocity:**
-- Total plans completed: 6
-- Average duration: 4 min
-- Total execution time: 0.33 hours
+## Active Work
 
-**By Phase:**
+**Current:** Phase 4 - Session Management (Plan 04-02: Session UI Controls next)
+**Last Completed:** 04-01-PLAN.md (Session Management Foundation)
+**Next:** Plan 04-02 (Session controls, summary modal, DetectionProvider integration)
+**Blocked:** None
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 1. Webcam Detection Pipeline | 2/3 | 9 min | 4.5 min |
-| 2. Focus Scoring & Visualization | 3/3 | 8 min | 2.7 min |
-| 3. AI Coaching Nudges | 1/2 | 3 min | 3.0 min |
+## Technical Debt
 
-**Recent Trend:**
-- Last 5 plans: 3min, 3min, 2min, 3min, 3min
-- Trend: Stable (~3 min/plan)
+- [ ] Add proper error boundaries for React components
+- [ ] Implement retry logic for API failures (Gemini, ElevenLabs)
+- [ ] Add E2E tests for coaching pipeline
+- [ ] Optimize tensor memory usage in long sessions (>1 hour)
+- [ ] Add loading states for API calls
 
-*Updated after each plan completion*
+## Known Issues
 
-## Accumulated Context
+- [ ] Score can appear "stuck" momentarily when hysteresis prevents update (by design, but may need UX improvement)
+- [ ] Calibration progress bar animation can lag on slower devices
+- [ ] SpeechSynthesis onend sometimes doesn't fire (10s timeout mitigates this)
 
-### Decisions
+## Environment Status
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+**Development:**
+- ✅ Next.js 15 with Turbopack
+- ✅ Human.js detection running at ~5 FPS
+- ✅ Gemini API integrated (requires GEMINI_API_KEY)
+- ✅ ElevenLabs TTS integrated (requires ELEVENLABS_API_KEY)
+- ✅ All builds passing
 
-- [Roadmap]: Detection and performance requirements grouped into Phase 1 (must validate stability before scoring depends on it)
-- [Roadmap]: Multiplayer deferred to v2 (solo demo is the priority for hackathon)
-- [Roadmap]: UI requirements distributed across feature phases rather than a separate UI phase
-- [01-01]: Used ClientDetectionLoader wrapper for next/dynamic ssr:false (Next.js 15 requires ssr:false inside use client components)
-- [01-01]: PermissionGate receives state as props instead of owning its own hook (prevents dual state machines)
-- [01-01]: HumanGL backend configured per research (3.6x faster warmup than webgl)
-- [01-02]: WebcamView is presentational (receives props from DetectionProvider), following single hook owner pattern
-- [01-02]: Canvas overlay mirrors drawing context to match CSS -scale-x-100 on video, text drawn un-mirrored
-- [01-02]: Fallback bounding box draw path if human.draw.all() fails (robustness)
-- [02-01]: Separate routes: / = Hero landing, /session = detection pipeline (clean separation of marketing and app)
-- [02-01]: Used framer-motion package name per user CONTEXT.md (not rebranded 'motion' package)
-- [02-01]: Button without @radix-ui/react-slot (asChild unnecessary for hackathon)
-- [02-02]: Asymmetric hysteresis (drop=8, recover=5): harder to drop than recover, matching user expectation
-- [02-02]: EMA state and displayed score in useRef (not useState) to avoid unnecessary re-renders
-- [02-02]: History capped at 300 entries (~60s at 5Hz) for sparkline without unbounded memory
-- [02-03]: Default exports for scoring components (matches project convention)
-- [02-03]: Collapsible sensitivity slider reduces visual noise; advanced control for demo operator
-- [02-03]: Fixed 200px ring size with will-change hint to prevent SVG layout thrash
-- [02-03]: SSR guard pattern (useState + useEffect mount check) for Recharts components
-- [03-01]: Immutable state machine: all coaching-engine functions return new NudgeState objects
-- [03-01]: 27 pre-cache phrases (9 per tier) for COACH-05 corpus
-- [03-01]: Precache route calls ElevenLabs API directly to avoid Next.js self-request issues
-- [03-01]: Buffer-to-Uint8Array conversion for NextResponse body compatibility
+**API Keys Required:**
+- `GEMINI_API_KEY` - Google AI Studio
+- `ELEVENLABS_API_KEY` - ElevenLabs
 
-### Pending Todos
+## Metrics
 
-None yet.
+**Phase Completion:**
+- Phase 1: Not started (3 plans)
+- Phase 2: ✅ Complete (3/3 plans, 2026-02-07)
+- Phase 3: ✅ Complete (2/2 plans, 2026-02-08)
+- Phase 4: In progress (1/3 plans, 2026-02-08)
+- Phase 5: Not started (stretch goal)
+- Phase 6: Not started (polish/enhancements)
 
-### Blockers/Concerns
+**Code Stats:**
+- Total commits: ~15+
+- Active files: ~30
+- API routes: 3 (coaching/generate, coaching/precache, elevenlabs/speak)
+- React hooks: 6 (useWebcamPermission, useHumanDetection, useFocusScore, useFocusChime, useAICoaching, useSessionManager)
+- Components: ~15
 
-- Hackathon timeline is days/weeks -- ruthless prioritization required
-- Human.js performance on actual demo hardware is unknown (must benchmark in Phase 1)
-- Turbopack workspace root warning from lockfile detection; harmless but may surface during development
-- GEMINI_API_KEY needs to be added to .env.local for Gemini text generation to work (fallback phrases will be used until configured)
+## Next Steps
+
+1. **Plan 04-02:** Session UI Controls - SessionControls component, SessionSummary modal, DetectionProvider integration
+2. **Plan 04-03:** Session History & Streaks - SessionHistory list, StreakBadge, PersonalBests, pre-session dashboard
+3. **Phase 4 UAT:** End-to-end session lifecycle verification
+
+## Dependencies
+
+**External Services:**
+- Google Gemini API (text generation)
+- ElevenLabs API (voice synthesis)
+- Browser SpeechSynthesis (fallback)
+
+**Browser Requirements:**
+- Chrome/Edge (primary targets)
+- Webcam permission required
+- WebGL for TensorFlow.js
+
+## Decisions Log
+
+### Recent Decisions
+1. **[2026-02-08]** useReducer for session state machine (no new dependency, predictable transitions)
+2. **[2026-02-08]** localStorage for session persistence (data < 100KB, no IndexedDB needed)
+3. **[2026-02-08]** Sessions under 60s not persisted (prevents accidental starts polluting history)
+4. **[2026-02-08]** Snapshots downsampled to 120 points for storage (one per ~30s for 60-min session)
+5. **[2026-02-08]** Reset functions preserve calibration and audio cache (expensive to regenerate)
+6. **[2026-02-08]** Phase 6 added: Polish & Visual Enhancements - dynamic face mesh color based on focus score
+7. **[2026-02-08]** Focus score only decreases (no increase) - simpler "survival mode"
+8. **[2026-02-08]** 3-second discrete timer instead of continuous smoothing - more predictable
+9. **[2026-02-08]** Escalation persists across session (resets only on sustained high focus)
+10. **[2026-02-08]** Pre-cache audio on session start (fire-and-forget, non-blocking)
+11. **[2026-02-07]** Head pose weighted higher than gaze (70% vs 20%) - reliability over accuracy
+
+### Historical Decisions
+- Chose Human.js over MediaPipe (browser-native, no backend)
+- Chose Next.js App Router over Pages (modern, streaming)
+- Chose ElevenLabs Flash v2.5 over Turbo (latency: 75ms vs 450ms)
+- Chose Gemini 2.5 Flash over GPT-4 (cost, caching, performance)
 
 ## Session Continuity
 
-Last session: 2026-02-08
-Stopped at: Completed 03-01-PLAN.md (Coaching engine foundation: state machine, prompts, cache, API routes)
-Resume file: .planning/phases/03-ai-coaching-nudges-ai-coaching-nudges/03-02-PLAN.md
+**Last session:** 2026-02-08
+**Stopped at:** Completed 04-01-PLAN.md
+**Resume:** .planning/phases/04-session-management-session-management/04-02-PLAN.md
+
+---
+*Updated: 2026-02-08*
+*Status: Phase 4 In Progress (1/3 plans complete)*
