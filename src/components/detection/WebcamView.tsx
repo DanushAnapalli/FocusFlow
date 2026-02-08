@@ -13,19 +13,25 @@ type RGB = [number, number, number];
 function getTargetRGB(score: number, isCalibrated: boolean): RGB {
   if (!isCalibrated) return [100, 80, 220]; // blue-purple (calibration)
 
-  if (score < 25) return [185, 28, 28]; // red-700
+  // Adjusted thresholds for better alignment feedback:
+  // 0-50: red (very misaligned)
+  // 50-70: orange (moderately misaligned)
+  // 70-85: yellow (slightly misaligned)
+  // 85-100: green (well-aligned)
 
-  if (score < 50) {
-    const t = (score - 25) / 25;
+  if (score < 50) return [239, 68, 68]; // red-500
+
+  if (score < 70) {
+    const t = (score - 50) / 20;
     return lerpRGB([239, 68, 68], [249, 115, 22], t); // red-500 -> orange-500
   }
 
-  if (score < 75) {
-    const t = (score - 50) / 25;
+  if (score < 85) {
+    const t = (score - 70) / 15;
     return lerpRGB([249, 115, 22], [234, 179, 8], t); // orange-500 -> yellow-500
   }
 
-  const t = (score - 75) / 25;
+  const t = (score - 85) / 15;
   return lerpRGB([234, 179, 8], [34, 197, 94], t); // yellow-500 -> green-500
 }
 
@@ -46,10 +52,10 @@ function lerpRGB(a: RGB, b: RGB, t: number): RGB {
  *
  * Color scheme:
  * - Blue-purple during calibration
- * - Dark red (< 25 score)
- * - Red to orange gradient (25-50)
- * - Orange to yellow gradient (50-75)
- * - Yellow to green gradient (75-100)
+ * - Red (< 50 score) - very misaligned
+ * - Orange (50-70) - moderately misaligned
+ * - Yellow (70-85) - slightly misaligned
+ * - Green (85-100) - well-aligned
  */
 function getFocusColors(score: number, isCalibrated: boolean): { primary: string; secondary: string } {
   // During calibration, use blue-purple
