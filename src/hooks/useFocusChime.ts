@@ -8,7 +8,7 @@ import { useCallback, useEffect, useRef } from "react";
 export interface ChimeConfig {
   /** Points below baseline to trigger chime (default: 2) */
   dropThreshold: number;
-  /** Points to recover before stopping chime (default: 1) */
+  /** @deprecated Recovery is now threshold-based using instantScore, not delta-based */
   recoveryAmount: number;
   /** Interval between chime plays in milliseconds (default: 1500 = 1.5s) */
   chimeIntervalMs: number;
@@ -16,7 +16,7 @@ export interface ChimeConfig {
 
 const DEFAULT_CHIME_CONFIG: ChimeConfig = {
   dropThreshold: 2, // Trigger after 2 points lost (adjusted for slower score changes)
-  recoveryAmount: 1,
+  recoveryAmount: 1, // Unused: recovery is now threshold-based via instantScore
   chimeIntervalMs: 1500, // Play every 1.5 seconds (faster succession)
 };
 
@@ -30,12 +30,14 @@ const DEFAULT_CHIME_CONFIG: ChimeConfig = {
  * 3. When score increases by recoveryAmount from the low point, stop chiming
  * 4. Reset baseline when user is back in good focus
  *
- * @param score - Current focus score (0-100)
+ * @param score - Current display focus score (0-100, monotonically decreasing)
+ * @param instantScore - Real-time instant score for recovery detection (0-100, fluctuates)
  * @param config - Optional configuration overrides
  * @returns Object with chimeCount (total chimes played in current session)
  */
 export function useFocusChime(
   score: number,
+  instantScore: number,
   config: Partial<ChimeConfig> = {}
 ): { chimeCount: number; reset: () => void } {
   const fullConfig = { ...DEFAULT_CHIME_CONFIG, ...config };
@@ -46,6 +48,7 @@ export function useFocusChime(
   const chimeIntervalRef = useRef<NodeJS.Timeout | null>(null); // Interval timer
   const audioContextRef = useRef<AudioContext | null>(null); // Web Audio context
   const chimeCountRef = useRef(0); // Total chimes played in current distraction session
+  const recentInstantScoresRef = useRef<number[]>([]); // Rolling buffer for instant score averaging
   const startTimeRef = useRef<number>(Date.now()); // When the hook was initialized
   const WARMUP_PERIOD_MS = 12000; // Don't trigger chimes for first 12 seconds (10s calibration + 2s buffer)
 
@@ -138,6 +141,13 @@ export function useFocusChime(
     const timeElapsed = Date.now() - startTimeRef.current;
     const inWarmup = timeElapsed < WARMUP_PERIOD_MS;
 
+    // Track instant score in rolling buffer for recovery averaging
+    recentInstantScoresRef.current.push(instantScore);
+    if (recentInstantScoresRef.current.length > 15) {
+      recentInstantScoresRef.current.shift(); // Keep last 15 readings (~3 seconds at 5 Hz)
+    }
+    const avgInstant = recentInstantScoresRef.current.reduce((a, b) => a + b, 0) / recentInstantScoresRef.current.length;
+
     // Update baseline if score is higher and we're not currently in a drop
     if (!isChimingRef.current && score > baselineScoreRef.current) {
       if (Math.random() < 0.05) { // Log 5% of updates to reduce spam
@@ -151,7 +161,7 @@ export function useFocusChime(
     const dropAmount = baselineScoreRef.current - score;
 
     if (Math.random() < 0.02) { // Log 2% of checks to reduce spam
-      console.log(`[useFocusChime] Score=${score}, Baseline=${baselineScoreRef.current}, Drop=${dropAmount}, Threshold=${fullConfig.dropThreshold}, Chiming=${isChimingRef.current}, Warmup=${inWarmup}`);
+      console.log(`[useFocusChime] Score=${score}, Baseline=${baselineScoreRef.current}, Drop=${dropAmount}, Threshold=${fullConfig.dropThreshold}, Chiming=${isChimingRef.current}, Warmup=${inWarmup}, AvgInstant=${avgInstant.toFixed(1)}`);
     }
 
     // Don't trigger chimes during warmup period
@@ -166,17 +176,18 @@ export function useFocusChime(
       lowestScoreRef.current = score;
     }
 
-    // Check if score has recovered enough to stop chiming
+    // Recovery: use average instant score instead of display score
+    // Display score is monotonically decreasing and can never recover,
+    // so we check if the user is actually focused again via instant score
     if (isChimingRef.current) {
-      const recovery = score - lowestScoreRef.current;
-      if (recovery >= fullConfig.recoveryAmount) {
-        // Stop chiming and reset baseline
+      const RECOVERY_THRESHOLD = 55; // Higher than 45 distraction threshold for hysteresis
+      if (avgInstant >= RECOVERY_THRESHOLD) {
         stopChiming();
         baselineScoreRef.current = score;
         lowestScoreRef.current = score;
       }
     }
-  }, [score, fullConfig.dropThreshold, fullConfig.recoveryAmount]);
+  }, [score, instantScore, fullConfig.dropThreshold]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -198,6 +209,7 @@ export function useFocusChime(
     baselineScoreRef.current = 100;
     lowestScoreRef.current = 100;
     chimeCountRef.current = 0;
+    recentInstantScoresRef.current = [];
     startTimeRef.current = Date.now(); // Reset warmup period
   }, []);
 

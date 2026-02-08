@@ -51,11 +51,12 @@ export default function DetectionProvider({
   const { numTensors, numBytes, isLeaking } = useTensorMonitor(humanRef);
 
   // Focus scoring pipeline
-  const { score, history, config, updateConfig, isCalibrated, calibrationProgress, reset: resetScore } = useFocusScore(result);
+  const { score, instantScore, history, config, updateConfig, isCalibrated, calibrationProgress, reset: resetScore } = useFocusScore(result);
 
   // Focus chime alert system (plays when score drops significantly)
-  const { chimeCount, reset: resetChime } = useFocusChime(score, {
-    dropThreshold: 2,
+  // Pass instantScore for recovery detection (display score is monotonic, can't detect recovery)
+  const { chimeCount, reset: resetChime } = useFocusChime(score, instantScore, {
+    dropThreshold: 5, // Changed from 2 to 5 - chime only after 5 points lost
     chimeIntervalMs: 1500,
   });
 
@@ -161,6 +162,7 @@ export default function DetectionProvider({
               loadingMessage={loadingMessage}
               fps={fps}
               focusScore={displayScore}
+              instantScore={instantScore} // Real-time score for color changes
               isCalibrated={isCalibrated}
             />
 
