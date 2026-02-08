@@ -99,6 +99,11 @@ export function useFocusScore(
     // 3. Compute raw instant score (0-100)
     const instant = computeInstantFocusScore(input, config);
 
+    // DEBUG: Log instant score and input values every ~20 frames
+    if (calibrationFrameCountRef.current % 20 === 0) {
+      console.log(`[InstantScore] score=${instant.toFixed(0)}, yaw=${input.yawDeg.toFixed(1)}, pitch=${input.pitchDeg.toFixed(1)}, gazeBearing=${input.gazeBearingDeg.toFixed(1)}, gazeStrength=${input.gazeStrength.toFixed(2)}`);
+    }
+
     // Update instant score for real-time visual feedback (colors)
     setInstantScore(instant);
 
