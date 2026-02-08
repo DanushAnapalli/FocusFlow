@@ -13,7 +13,7 @@ FocusFlow delivers an AI-powered focus coaching tool in five phases following a 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Webcam Detection Pipeline** - Stable, performant webcam-based face/gaze/pose detection with explicit memory management
-- [ ] **Phase 2: Focus Scoring & Visualization** - Real-time 0-100 focus score from detection data with animated visual feedback
+- [x] **Phase 2: Focus Scoring & Visualization** - Real-time 0-100 focus score from detection data with animated visual feedback
 - [ ] **Phase 3: AI Coaching Nudges** - Context-aware voice coaching triggered by sustained distraction with cooldown and escalation
 - [ ] **Phase 4: Session Management** - Complete session lifecycle with metrics, history, streaks, and responsive UI
 - [ ] **Phase 5: Blockchain Rewards (Stretch)** - Solana devnet token minting as optional gamification layer
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Webcam Detection Pipeline | 0/3 | Planned | - |
-| 2. Focus Scoring & Visualization | 0/3 | Planned | - |
+| 2. Focus Scoring & Visualization | 3/3 | ✓ Complete | 2026-02-07 |
 | 3. AI Coaching Nudges | 0/TBD | Not started | - |
 | 4. Session Management | 0/TBD | Not started | - |
 | 5. Blockchain Rewards (Stretch) | 0/TBD | Not started | - |
