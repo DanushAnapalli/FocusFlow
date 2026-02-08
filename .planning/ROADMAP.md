@@ -106,12 +106,12 @@ Plans:
 **Requirements**: VISUAL-01, VISUAL-02, UI-06
 **Success Criteria** (what must be TRUE):
   1. User sees the face mesh gradient change color dynamically based on focus score (0-25: red, 25-50: orange, 50-75: yellow, 75-100: green)
-  2. Stacked metrics display reverts to grey (neutral) color scheme
+  2. Stacked text metrics (to the right of face mesh) are only visible during calibration and are automatically removed once calibration is complete
   3. Color transitions are smooth and provide clear visual feedback without being distracting
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 06-01: TBD
+- [ ] 06-01-PLAN.md -- Smooth color lerp, conditional metrics hiding, console.log cleanup
 
 ## Progress
 
