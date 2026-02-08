@@ -219,6 +219,12 @@ export default function WebcamView({
       // Cross-frame color lerping for smooth transitions
       // Use alignmentScore for instant head alignment feedback
       const targetRGB = getTargetRGB(alignmentScore, isCalibrated);
+
+      // DEBUG: Log alignment and colors every 30 frames (~6 seconds at 5 Hz)
+      if (Math.floor(Math.random() * 30) === 0) {
+        console.log(`[MeshColor] alignment=${alignmentScore.toFixed(0)}, targetRGB=[${targetRGB.map(v => v.toFixed(0)).join(',')}], isCalibrated=${isCalibrated}`);
+      }
+
       const cur = currentColorRef.current;
       const lerpFactor = 0.15;
       currentColorRef.current = [

@@ -105,6 +105,11 @@ export function useFocusScore(
     // This is for visual feedback only, separate from accumulated focus score
     const alignmentScore = instant; // Use the instant score as alignment
 
+    // DEBUG: Log alignment every 20 frames to diagnose color issues
+    if (calibrationFrameCountRef.current % 20 === 0 && isCalibrated) {
+      console.log(`[Alignment] score=${alignmentScore.toFixed(0)}, yaw=${input.yawDeg.toFixed(1)}°, pitch=${input.pitchDeg.toFixed(1)}°, gazeBearing=${input.gazeBearingDeg.toFixed(1)}°`);
+    }
+
     // Update instant score for real-time visual feedback (colors)
     setInstantScore(instant);
     setAlignmentScore(alignmentScore);
