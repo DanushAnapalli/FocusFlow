@@ -30,11 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can observe the current FPS rate displayed in a monitoring panel and it stays above 15 FPS during normal use
   4. Application runs for 30 continuous minutes without crashing, freezing, or accumulating memory (tensor count stays flat)
   5. User who denies or dismisses webcam permission sees a clear, helpful error message with instructions to recover
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md -- Project scaffold, Human.js config, webcam permission flow with privacy UI
+- [ ] 01-02-PLAN.md -- Detection loop, webcam view with face/gaze/pose canvas overlay
+- [ ] 01-03-PLAN.md -- Performance monitoring panel, tensor leak detection, 30-minute stability verification
 
 ### Phase 2: Focus Scoring & Visualization
 **Goal**: Users see a live, trustworthy focus score that responds to real attention changes without false alarms
@@ -103,7 +104,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Webcam Detection Pipeline | 0/TBD | Not started | - |
+| 1. Webcam Detection Pipeline | 0/3 | Planned | - |
 | 2. Focus Scoring & Visualization | 0/TBD | Not started | - |
 | 3. AI Coaching Nudges | 0/TBD | Not started | - |
 | 4. Session Management | 0/TBD | Not started | - |
