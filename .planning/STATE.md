@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Users must receive accurate, real-time awareness of when they're losing focus through webcam-based detection
-**Current focus:** Phase 2 - Focus Scoring & Visualization (COMPLETE)
+**Current focus:** Phase 3 - AI Coaching Nudges (IN PROGRESS)
 
 ## Current Position
 
-Phase: 2 of 5 (Focus Scoring & Visualization)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-02-08 -- Completed 02-03-PLAN.md
+Phase: 3 of 5 (AI Coaching Nudges)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-08 -- Completed 03-01-PLAN.md
 
-Progress: [█████░░░░░] 50%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
+- Total plans completed: 6
 - Average duration: 4 min
-- Total execution time: 0.28 hours
+- Total execution time: 0.33 hours
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [█████░░░░░] 50%
 |-------|-------|-------|----------|
 | 1. Webcam Detection Pipeline | 2/3 | 9 min | 4.5 min |
 | 2. Focus Scoring & Visualization | 3/3 | 8 min | 2.7 min |
+| 3. AI Coaching Nudges | 1/2 | 3 min | 3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 6min, 3min, 3min, 2min, 3min
-- Trend: Accelerating
+- Last 5 plans: 3min, 3min, 2min, 3min, 3min
+- Trend: Stable (~3 min/plan)
 
 *Updated after each plan completion*
 
@@ -62,6 +63,10 @@ Recent decisions affecting current work:
 - [02-03]: Collapsible sensitivity slider reduces visual noise; advanced control for demo operator
 - [02-03]: Fixed 200px ring size with will-change hint to prevent SVG layout thrash
 - [02-03]: SSR guard pattern (useState + useEffect mount check) for Recharts components
+- [03-01]: Immutable state machine: all coaching-engine functions return new NudgeState objects
+- [03-01]: 27 pre-cache phrases (9 per tier) for COACH-05 corpus
+- [03-01]: Precache route calls ElevenLabs API directly to avoid Next.js self-request issues
+- [03-01]: Buffer-to-Uint8Array conversion for NextResponse body compatibility
 
 ### Pending Todos
 
@@ -72,9 +77,10 @@ None yet.
 - Hackathon timeline is days/weeks -- ruthless prioritization required
 - Human.js performance on actual demo hardware is unknown (must benchmark in Phase 1)
 - Turbopack workspace root warning from lockfile detection; harmless but may surface during development
+- GEMINI_API_KEY needs to be added to .env.local for Gemini text generation to work (fallback phrases will be used until configured)
 
 ## Session Continuity
 
 Last session: 2026-02-08
-Stopped at: Completed 02-03-PLAN.md (Focus score visualization components and session layout)
-Resume file: .planning/phases/03-session-management/
+Stopped at: Completed 03-01-PLAN.md (Coaching engine foundation: state machine, prompts, cache, API routes)
+Resume file: .planning/phases/03-ai-coaching-nudges-ai-coaching-nudges/03-02-PLAN.md
