@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Phase: 1 of 5 (Webcam Detection Pipeline)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-07 -- Completed 01-01-PLAN.md
+Last activity: 2026-02-08 -- Completed 01-02-PLAN.md
 
-Progress: [█░░░░░░░░░] 10%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 6 min
-- Total execution time: 0.1 hours
+- Total plans completed: 2
+- Average duration: 5 min
+- Total execution time: 0.15 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Webcam Detection Pipeline | 1/3 | 6 min | 6 min |
+| 1. Webcam Detection Pipeline | 2/3 | 9 min | 4.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 6min
-- Trend: First plan
+- Last 5 plans: 6min, 3min
+- Trend: Accelerating
 
 *Updated after each plan completion*
 
@@ -48,6 +48,9 @@ Recent decisions affecting current work:
 - [01-01]: Used ClientDetectionLoader wrapper for next/dynamic ssr:false (Next.js 15 requires ssr:false inside use client components)
 - [01-01]: PermissionGate receives state as props instead of owning its own hook (prevents dual state machines)
 - [01-01]: HumanGL backend configured per research (3.6x faster warmup than webgl)
+- [01-02]: WebcamView is presentational (receives props from DetectionProvider), following single hook owner pattern
+- [01-02]: Canvas overlay mirrors drawing context to match CSS -scale-x-100 on video, text drawn un-mirrored
+- [01-02]: Fallback bounding box draw path if human.draw.all() fails (robustness)
 
 ### Pending Todos
 
@@ -61,6 +64,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-07
-Stopped at: Completed 01-01-PLAN.md (Project scaffold + webcam permission flow)
-Resume file: .planning/phases/01-webcam-detection-pipeline/01-02-PLAN.md
+Last session: 2026-02-08
+Stopped at: Completed 01-02-PLAN.md (Detection loop and webcam visualization)
+Resume file: .planning/phases/01-webcam-detection-pipeline/01-03-PLAN.md
