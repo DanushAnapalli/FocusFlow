@@ -14,24 +14,24 @@ function getTargetRGB(score: number, isCalibrated: boolean): RGB {
   if (!isCalibrated) return [100, 80, 220]; // blue-purple (calibration)
 
   // Adjusted thresholds for better alignment feedback:
-  // 0-50: red (very misaligned)
-  // 50-70: orange (moderately misaligned)
-  // 70-85: yellow (slightly misaligned)
-  // 85-100: green (well-aligned)
+  // 0-40: red (very misaligned - head turned significantly)
+  // 40-60: orange (moderately misaligned - noticeable deviation)
+  // 60-75: yellow (slightly unaligned - minor adjustments)
+  // 75-100: green (well-aligned - normal working posture)
 
-  if (score < 50) return [239, 68, 68]; // red-500
+  if (score < 40) return [239, 68, 68]; // red-500
 
-  if (score < 70) {
-    const t = (score - 50) / 20;
+  if (score < 60) {
+    const t = (score - 40) / 20;
     return lerpRGB([239, 68, 68], [249, 115, 22], t); // red-500 -> orange-500
   }
 
-  if (score < 85) {
-    const t = (score - 70) / 15;
+  if (score < 75) {
+    const t = (score - 60) / 15;
     return lerpRGB([249, 115, 22], [234, 179, 8], t); // orange-500 -> yellow-500
   }
 
-  const t = (score - 85) / 15;
+  const t = (score - 75) / 25;
   return lerpRGB([234, 179, 8], [34, 197, 94], t); // yellow-500 -> green-500
 }
 
@@ -52,10 +52,10 @@ function lerpRGB(a: RGB, b: RGB, t: number): RGB {
  *
  * Color scheme:
  * - Blue-purple during calibration
- * - Red (< 50 score) - very misaligned
- * - Orange (50-70) - moderately misaligned
- * - Yellow (70-85) - slightly misaligned
- * - Green (85-100) - well-aligned
+ * - Red (< 40 score) - very misaligned
+ * - Orange (40-60) - moderately misaligned
+ * - Yellow (60-75) - slightly unaligned
+ * - Green (75-100) - well-aligned
  */
 function getFocusColors(score: number, isCalibrated: boolean): { primary: string; secondary: string } {
   // During calibration, use blue-purple
@@ -66,17 +66,17 @@ function getFocusColors(score: number, isCalibrated: boolean): { primary: string
     };
   }
 
-  // Below 25: Dark red
-  if (score < 25) {
+  // Below 20: Dark red
+  if (score < 20) {
     return {
       primary: 'rgba(185, 28, 28, 0.8)', // red-700
       secondary: 'rgba(220, 38, 38, 0.9)', // red-600
     };
   }
 
-  // 25-50: Red to orange gradient
-  if (score < 50) {
-    const t = (score - 25) / 25; // 0 to 1
+  // 20-40: Red to orange gradient
+  if (score < 40) {
+    const t = (score - 20) / 20; // 0 to 1
     return {
       primary: interpolateColor(
         [239, 68, 68],   // red-500
@@ -93,9 +93,9 @@ function getFocusColors(score: number, isCalibrated: boolean): { primary: string
     };
   }
 
-  // 50-75: Orange to yellow gradient
-  if (score < 75) {
-    const t = (score - 50) / 25; // 0 to 1
+  // 40-60: Orange to yellow gradient
+  if (score < 60) {
+    const t = (score - 40) / 20; // 0 to 1
     return {
       primary: interpolateColor(
         [249, 115, 22],  // orange-500
@@ -106,6 +106,25 @@ function getFocusColors(score: number, isCalibrated: boolean): { primary: string
       secondary: interpolateColor(
         [253, 186, 116], // orange-300
         [253, 224, 71],  // yellow-300
+        t,
+        0.9
+      ),
+    };
+  }
+
+  // 60-75: Yellow gradient
+  if (score < 75) {
+    const t = (score - 60) / 15; // 0 to 1
+    return {
+      primary: interpolateColor(
+        [234, 179, 8],   // yellow-500
+        [234, 179, 8],   // yellow-500 (stay yellow)
+        t,
+        0.8
+      ),
+      secondary: interpolateColor(
+        [253, 224, 71],  // yellow-300
+        [253, 224, 71],  // yellow-300 (stay yellow)
         t,
         0.9
       ),
