@@ -100,6 +100,9 @@ function sessionReducer(
         distractionCount: state.distractionCount + 1,
       };
 
+    case "RESET":
+      return INITIAL_STATE;
+
     default:
       return state;
   }
@@ -184,6 +187,10 @@ export function useSessionManager() {
     dispatch({ type: "DISTRACTION" });
   }, []);
 
+  const reset = useCallback(() => {
+    dispatch({ type: "RESET" });
+  }, []);
+
   return {
     session,
     start,
@@ -192,5 +199,6 @@ export function useSessionManager() {
     end,
     tick,
     recordDistraction,
+    reset,
   };
 }

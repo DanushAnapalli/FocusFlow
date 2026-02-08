@@ -35,6 +35,7 @@ export type SessionAction =
   | { type: "PAUSE" }
   | { type: "RESUME" }
   | { type: "END" }
+  | { type: "RESET" }
   | { type: "TICK"; score: number; timestamp: number }
   | { type: "DISTRACTION" };
 

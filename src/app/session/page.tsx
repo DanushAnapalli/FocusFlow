@@ -53,7 +53,7 @@ interface DashboardData {
  * beforeunload guard prevents accidental navigation during active sessions.
  */
 export default function SessionPage() {
-  const { session, start, pause, resume, end, tick, recordDistraction } =
+  const { session, start, pause, resume, end, tick, recordDistraction, reset } =
     useSessionManager();
 
   const [lastCompletedSession, setLastCompletedSession] =
@@ -145,8 +145,9 @@ export default function SessionPage() {
   const handleDismiss = useCallback(() => {
     setLastCompletedSession(null);
     setNewBests([]);
+    reset(); // Reset session phase to idle
     refreshDashboardData();
-  }, [refreshDashboardData]);
+  }, [refreshDashboardData, reset]);
 
   // beforeunload guard: warn when navigating away during active session
   useEffect(() => {
