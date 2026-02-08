@@ -9,30 +9,35 @@ type RGB = [number, number, number];
 /**
  * Get the target RGB color for a given focus score and calibration state.
  * Returns raw numeric tuples for cross-frame lerping.
+ *
+ * Color mapping (focused = green, distracted = red):
+ *   0-30:  red (very distracted - head turned away)
+ *   30-50: red -> orange (moderately distracted)
+ *   50-65: orange -> yellow (slightly distracted)
+ *   65-80: yellow -> green (mostly focused)
+ *   80-100: pure green (focused - looking at screen)
  */
 function getTargetRGB(score: number, isCalibrated: boolean): RGB {
   if (!isCalibrated) return [100, 80, 220]; // blue-purple (calibration)
 
-  // Adjusted thresholds for better alignment feedback:
-  // 0-40: red (very misaligned - head turned significantly)
-  // 40-60: orange (moderately misaligned - noticeable deviation)
-  // 60-75: yellow (slightly unaligned - minor adjustments)
-  // 75-100: green (well-aligned - normal working posture)
+  if (score < 30) return [239, 68, 68]; // red-500
 
-  if (score < 40) return [239, 68, 68]; // red-500
-
-  if (score < 60) {
-    const t = (score - 40) / 20;
-    return lerpRGB([239, 68, 68], [249, 115, 22], t); // red-500 -> orange-500
+  if (score < 50) {
+    const t = (score - 30) / 20;
+    return lerpRGB([239, 68, 68], [249, 115, 22], t); // red -> orange
   }
 
-  if (score < 75) {
-    const t = (score - 60) / 15;
-    return lerpRGB([249, 115, 22], [234, 179, 8], t); // orange-500 -> yellow-500
+  if (score < 65) {
+    const t = (score - 50) / 15;
+    return lerpRGB([249, 115, 22], [234, 179, 8], t); // orange -> yellow
   }
 
-  const t = (score - 75) / 25;
-  return lerpRGB([234, 179, 8], [34, 197, 94], t); // yellow-500 -> green-500
+  if (score < 80) {
+    const t = (score - 65) / 15;
+    return lerpRGB([234, 179, 8], [34, 197, 94], t); // yellow -> green
+  }
+
+  return [34, 197, 94]; // pure green-500 for score >= 80
 }
 
 /**
@@ -50,102 +55,62 @@ function lerpRGB(a: RGB, b: RGB, t: number): RGB {
  * Calculate dynamic colors based on focus score and calibration state.
  * Returns { primary: string, secondary: string } for mesh and label colors.
  *
- * Color scheme:
+ * Color scheme (matches getTargetRGB):
  * - Blue-purple during calibration
- * - Red (< 40 score) - very misaligned
- * - Orange (40-60) - moderately misaligned
- * - Yellow (60-75) - slightly unaligned
- * - Green (75-100) - well-aligned
+ * - Red (< 30) - very distracted
+ * - Orange (30-50) - moderately distracted
+ * - Yellow (50-65) - slightly distracted
+ * - Green (65-80) - transition to focused
+ * - Pure green (80+) - focused, looking at screen
  */
 function getFocusColors(score: number, isCalibrated: boolean): { primary: string; secondary: string } {
   // During calibration, use blue-purple
   if (!isCalibrated) {
     return {
-      primary: 'rgba(100, 80, 220, 0.8)',   // blue-purple
-      secondary: 'rgba(140, 120, 255, 0.9)', // lighter blue-purple
+      primary: 'rgba(100, 80, 220, 0.8)',
+      secondary: 'rgba(140, 120, 255, 0.9)',
     };
   }
 
-  // Below 20: Dark red
-  if (score < 20) {
+  // Below 30: Red (very distracted)
+  if (score < 30) {
     return {
-      primary: 'rgba(185, 28, 28, 0.8)', // red-700
-      secondary: 'rgba(220, 38, 38, 0.9)', // red-600
+      primary: 'rgba(220, 38, 38, 0.8)',
+      secondary: 'rgba(252, 165, 165, 0.9)',
     };
   }
 
-  // 20-40: Red to orange gradient
-  if (score < 40) {
-    const t = (score - 20) / 20; // 0 to 1
+  // 30-50: Red to orange
+  if (score < 50) {
+    const t = (score - 30) / 20;
     return {
-      primary: interpolateColor(
-        [239, 68, 68],   // red-500
-        [249, 115, 22],  // orange-500
-        t,
-        0.8
-      ),
-      secondary: interpolateColor(
-        [252, 165, 165], // red-300
-        [253, 186, 116], // orange-300
-        t,
-        0.9
-      ),
+      primary: interpolateColor([239, 68, 68], [249, 115, 22], t, 0.8),
+      secondary: interpolateColor([252, 165, 165], [253, 186, 116], t, 0.9),
     };
   }
 
-  // 40-60: Orange to yellow gradient
-  if (score < 60) {
-    const t = (score - 40) / 20; // 0 to 1
+  // 50-65: Orange to yellow
+  if (score < 65) {
+    const t = (score - 50) / 15;
     return {
-      primary: interpolateColor(
-        [249, 115, 22],  // orange-500
-        [234, 179, 8],   // yellow-500
-        t,
-        0.8
-      ),
-      secondary: interpolateColor(
-        [253, 186, 116], // orange-300
-        [253, 224, 71],  // yellow-300
-        t,
-        0.9
-      ),
+      primary: interpolateColor([249, 115, 22], [234, 179, 8], t, 0.8),
+      secondary: interpolateColor([253, 186, 116], [253, 224, 71], t, 0.9),
     };
   }
 
-  // 60-75: Yellow gradient
-  if (score < 75) {
-    const t = (score - 60) / 15; // 0 to 1
+  // 65-80: Yellow to green
+  if (score < 80) {
+    const t = (score - 65) / 15;
     return {
-      primary: interpolateColor(
-        [234, 179, 8],   // yellow-500
-        [234, 179, 8],   // yellow-500 (stay yellow)
-        t,
-        0.8
-      ),
-      secondary: interpolateColor(
-        [253, 224, 71],  // yellow-300
-        [253, 224, 71],  // yellow-300 (stay yellow)
-        t,
-        0.9
-      ),
+      primary: interpolateColor([234, 179, 8], [34, 197, 94], t, 0.8),
+      secondary: interpolateColor([253, 224, 71], [134, 239, 172], t, 0.9),
     };
   }
 
-  // 75-100: Yellow to green gradient
-  const t = (score - 75) / 25; // 0 to 1
+  // 80+: Pure green (focused)
   return {
-    primary: interpolateColor(
-      [234, 179, 8],   // yellow-500
-      [34, 197, 94],   // green-500
-      t,
-      0.8
-    ),
-    secondary: interpolateColor(
-      [253, 224, 71],  // yellow-300
-      [134, 239, 172], // green-300
-      t,
-      0.9
-    ),
+    primary: 'rgba(34, 197, 94, 0.8)',
+    secondary: 'rgba(134, 239, 172, 0.9)',
   };
 }
 
@@ -235,17 +200,12 @@ export default function WebcamView({
       ctx.translate(displayWidth, 0);
       ctx.scale(-1, 1);
 
-      // Cross-frame color lerping for smooth transitions
-      // Use alignmentScore for instant head alignment feedback
-      const targetRGB = getTargetRGB(alignmentScore, isCalibrated);
-
-      // DEBUG: Log alignment and colors every 30 frames (~6 seconds at 5 Hz)
-      if (Math.floor(Math.random() * 30) === 0) {
-        console.log(`[MeshColor] alignment=${alignmentScore.toFixed(0)}, targetRGB=[${targetRGB.map(v => v.toFixed(0)).join(',')}], isCalibrated=${isCalibrated}`);
-      }
+      // Cross-frame color lerping for responsive transitions
+      // Use instantScore for immediate visual feedback on gaze direction
+      const targetRGB = getTargetRGB(instantScore, isCalibrated);
 
       const cur = currentColorRef.current;
-      const lerpFactor = 0.15;
+      const lerpFactor = 0.4; // Fast response for live feel
       currentColorRef.current = [
         cur[0] + (targetRGB[0] - cur[0]) * lerpFactor,
         cur[1] + (targetRGB[1] - cur[1]) * lerpFactor,
@@ -324,7 +284,7 @@ export default function WebcamView({
     };
 
     drawOverlay();
-  }, [result, humanRef, videoRef, fps, alignmentScore, isCalibrated]);
+  }, [result, humanRef, videoRef, fps, instantScore, isCalibrated]);
 
   // Calculate colors for data attributes (for testing)
   const currentColors = getFocusColors(focusScore, isCalibrated);
