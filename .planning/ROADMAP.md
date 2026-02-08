@@ -2,7 +2,7 @@
 
 ## Overview
 
-FocusFlow delivers an AI-powered focus coaching tool in five phases following a strict validation-before-expansion sequence. The webcam detection pipeline must be proven stable before scoring consumes it, scoring must be trustworthy before coaching reacts to it, and the full solo experience must work before session persistence adds polish. Each phase delivers a coherent, independently verifiable capability that unblocks the next. Blockchain rewards are a stretch goal attempted only after the core demo loop is complete.
+FocusFlow delivers an AI-powered focus coaching tool in six phases following a strict validation-before-expansion sequence. The webcam detection pipeline must be proven stable before scoring consumes it, scoring must be trustworthy before coaching reacts to it, and the full solo experience must work before session persistence adds polish. Each phase delivers a coherent, independently verifiable capability that unblocks the next. Blockchain rewards are a stretch goal attempted only after the core demo loop is complete, followed by visual polish enhancements.
 
 ## Phases
 
@@ -17,6 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: AI Coaching Nudges** - Context-aware voice coaching triggered by sustained distraction with cooldown and escalation
 - [ ] **Phase 4: Session Management** - Complete session lifecycle with metrics, history, streaks, and responsive UI
 - [ ] **Phase 5: Blockchain Rewards (Stretch)** - Solana devnet token minting as optional gamification layer
+- [ ] **Phase 6: Polish & Visual Enhancements** - Dynamic face mesh color feedback and UI refinements
 
 ## Phase Details
 
@@ -66,8 +67,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- Coaching engine (timing/escalation logic), Gemini API route, ElevenLabs upgrade with caching
-- [ ] 03-02-PLAN.md -- Rewrite useAICoaching hook, NudgeIndicator component, wire into DetectionProvider
+- [x] 03-01-PLAN.md -- Coaching engine (timing/escalation logic), Gemini API route, ElevenLabs upgrade with caching
+- [x] 03-02-PLAN.md -- Rewrite useAICoaching hook, NudgeIndicator component, wire into DetectionProvider
 
 ### Phase 4: Session Management
 **Goal**: Users can run complete focus sessions with start/pause/end lifecycle, review their performance afterward, and track progress over time
@@ -79,11 +80,12 @@ Plans:
   3. User can view past sessions in a timeline showing when focus dropped during each session, along with personal bests (longest focus streak, highest score)
   4. User's focus streak (consecutive days with sessions) is tracked and displayed, with session history persisting across browser sessions
   5. Interface works correctly on desktop Chrome and Edge browsers with a responsive layout
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md -- Session types, storage layer, state machine hook, reset functions for existing hooks
+- [ ] 04-02-PLAN.md -- Session controls, timeline chart, summary overlay, page rewrite with lifecycle integration
+- [ ] 04-03-PLAN.md -- Pre-session dashboard (history, streak, personal bests), responsive layout verification
 
 ### Phase 5: Blockchain Rewards (Stretch)
 **Goal**: Users earn token rewards on Solana devnet for focused work, with the blockchain layer never blocking the core focus experience
@@ -98,15 +100,29 @@ Plans:
 Plans:
 - [ ] 05-01: TBD
 
+### Phase 6: Polish & Visual Enhancements
+**Goal**: Users see their face mesh visualization change color in real-time based on their focus score, providing immediate visual feedback as a polish enhancement
+**Depends on**: Phase 5
+**Requirements**: VISUAL-01, VISUAL-02, UI-06
+**Success Criteria** (what must be TRUE):
+  1. User sees the face mesh gradient change color dynamically based on focus score (0-25: red, 25-50: orange, 50-75: yellow, 75-100: green)
+  2. Stacked metrics display reverts to grey (neutral) color scheme
+  3. Color transitions are smooth and provide clear visual feedback without being distracting
+**Plans**: TBD
+
+Plans:
+- [ ] 06-01: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Webcam Detection Pipeline | 0/3 | Planned | - |
 | 2. Focus Scoring & Visualization | 3/3 | ✓ Complete | 2026-02-07 |
-| 3. AI Coaching Nudges | 0/2 | Planned | - |
-| 4. Session Management | 0/TBD | Not started | - |
+| 3. AI Coaching Nudges | 2/2 | ✓ Complete | 2026-02-08 |
+| 4. Session Management | 0/3 | Planned | - |
 | 5. Blockchain Rewards (Stretch) | 0/TBD | Not started | - |
+| 6. Polish & Visual Enhancements | 0/TBD | Not started | - |
